@@ -3,6 +3,18 @@ export interface Teams {
     name: string;
 }
 
+export interface TeamsState {
+    teams: Teams[];
+    loading: boolean;
+    error: boolean;
+}
+
+export interface TeamOverviewData { teamLead?: UserData, teamMembers?: UserData[] }
+export interface TeamOverviewState {
+    teamOverviewData: TeamOverviewData;
+    loading: boolean;
+    error: boolean;
+}
 export interface TeamOverview {
     id: string;
     teamLeadId: string;
