@@ -17,7 +17,7 @@ interface CardProps {
 const Card = ({id, columns, url, hasNavigation = true, navigationProps = null}: CardProps) => {
     const navigate = useNavigate();
 
-    const handleClick = (event: Event) => {
+    const handleNavigation = (event: Event) => {
         if (hasNavigation && url) {
             navigate(url, {
                 state: navigationProps,
@@ -30,7 +30,7 @@ const Card = ({id, columns, url, hasNavigation = true, navigationProps = null}: 
         <Container
             data-testid={`cardContainer-${id}`}
             hasNavigation={hasNavigation}
-            onClick={handleClick}
+            onClick={handleNavigation}
         >
             {columns.map(({key, value}) => (
                 <p key={key}>
