@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {render, screen, waitFor} from '@testing-library/react';
-import * as API from '../../api';
-import TeamOverview from '../TeamOverview';
+import {render, screen, waitFor, within} from '@testing-library/react';
+import useFetchTeamOverview from 'hooks/useFetchTeamOverview';
+import TeamOverviewPage from '../TeamOverviewPage';
 
 jest.mock('react-router-dom', () => ({
     useLocation: () => ({
@@ -14,6 +14,8 @@ jest.mock('react-router-dom', () => ({
         teamId: '1',
     }),
 }));
+
+jest.mock('../../hooks/useFetchTeamOverview');
 
 describe('TeamOverview', () => {
     beforeAll(() => {
@@ -29,26 +31,39 @@ describe('TeamOverview', () => {
     });
 
     it('should render team overview users', async () => {
-        const teamOverview = {
+        const teamLead = {
             id: '1',
-            teamLeadId: '2',
-            teamMemberIds: ['3', '4', '5'],
-        };
-        const userData = {
-            id: '2',
-            firstName: 'userData',
-            lastName: 'userData',
-            displayName: 'userData',
+            firstName: 'name',
+            lastName: 'name',
+            displayName: '',
             location: '',
             avatar: '',
         };
-        jest.spyOn(API, 'getTeamOverview').mockImplementationOnce(() => Promise.resolve({} as any));
-        jest.spyOn(API, 'getUserData').mockImplementationOnce(() => Promise.resolve({} as any));
+        const teamMembers = [
+            {
+                id: '2',
+                firstName: 'firstname',
+                lastName: 'lastname',
+                displayName: 'firstnamelastname',
+                location: '',
+                avatar: '',
+            },
+        ];
 
-        render(<TeamOverview />);
-
-        await waitFor(() => {
-            expect(screen.queryAllByText('userData')).toHaveLength(4);
+        jest.mocked(useFetchTeamOverview).mockReturnValue({
+            state: {
+                teamOverviewData: {
+                    teamLead,
+                    teamMembers,
+                },
+                loading: false,
+                error: false,
+            },
+            dispatch: jest.fn(),
         });
+
+        render(<TeamOverviewPage />);
+
+        expect(screen.getAllByText(/location/i)).toHaveLength(2);
     });
 });
